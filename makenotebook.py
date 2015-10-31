@@ -1,7 +1,6 @@
 import IPython
 from IPython import nbformat
 from IPython.nbconvert.preprocessors.execute import ExecutePreprocessor
-import textwrap
 from IPython import nbconvert
 import os
 
