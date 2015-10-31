@@ -247,7 +247,7 @@ $(document).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Eagles-Third-Down-Woes,-Situation-or-Incompetence?">Eagles Third Down Woes, Situation or Incompetence?<a class="anchor-link" href="#Eagles-Third-Down-Woes,-Situation-or-Incompetence?">&#182;</a></h1>
+<h1 id="3rd-Down-Analysis:-Weeks-custom.css-7">3rd Down Analysis: Weeks custom.css-7<a class="anchor-link" href="#3rd-Down-Analysis:-Weeks-custom.css-7">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -256,10 +256,9 @@ $(document).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>After the Eagles dropped their latest game to the Washington Redskins, Chip Kelly attributed part of the lack of offensive success to poor performance on third down, saying,</p>
-<p>"you got to stay on the field on third down. So if third down gets you a first down, now we can run the football. We're not converting third downs and that's the biggest problem with us offensively right now. We need to play more on offense. That's the bottom-line. We're getting off the field on third down and most of the time when we're off the field on third down, it's our fault. We're not getting stopped. We're doing it to ourselves."</p>
-<p>Football analyst Warren Sharp, of whom I am fan, wrote an excellent counterpoint to the comments, in this article <a href="http://www.foxsports.com/college-football/outkick-the-coverage/chip-kelly-is-wrong-about-the-eagles-problems-100715">http://www.foxsports.com/college-football/outkick-the-coverage/chip-kelly-is-wrong-about-the-eagles-problems-100715</a>.  His main argument was that the Eagles are so poor on third down because they have a very high yards per 3rd down attempt, which limits their ability to convert.</p>
-<p>Using BurntSushi's NFLGame Package, I dive into the data to show that both perspectives are correct (unfortunately for Eagles fans).  The Eagles are putting themselves into really poor situations, and they are also one of the worst teams in the league converting on third down given their situation.</p>
+<p>This is an automated IPython Notebook that displays 3rd Down Performance over the selected weeks.  You can select week numbers by tweaking the URL.</p>
+<p>You can use these visualizations to get a better understanding of how each team has been performing.  You can also see the code used to build this by clicking on the visualizations or where prompted to click, so you can use this workbook as a starting place towards your future analyses.</p>
+<p>For an example of how I used this notebook to better understand the Eagles third down performance earlier in the season, click here.</p>
 
 </div>
 </div>
@@ -270,67 +269,10 @@ $(document).ready(function(){
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">#requests handles our interaction with the websites.</span>
+<div class=" highlight hl-ipython2"><pre><span class="c">#Import necessary Python Packages. </span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
-
-<span class="c">#Declare I am writing a function called getTextfromUrl that receives a url as input.</span>
-<span class="k">def</span> <span class="nf">getTeamlogo</span><span class="p">(</span><span class="n">team</span><span class="p">):</span>
-
-    <span class="n">url</span><span class="o">=</span><span class="s">&quot;http://www.nfl.com/teams&quot;</span>
-<span class="c">#The program will attempt all actions indented under &quot;try&quot;, and if it fails will execute the commands indented beneath except.</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c">#if http is not in the url, append that to the url</span>
-        <span class="k">if</span> <span class="s">&#39;http&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">url</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-            <span class="n">url</span><span class="o">=</span><span class="s">&#39;http://&#39;</span><span class="o">+</span> <span class="n">url</span>
-
-        <span class="c">#Use the requests library to reach out the url and return a RESPONSE object which contains page source code, cookies, and</span>
-        <span class="c">#other miscellaneous information from the page, error if the url does not respond in 5 seconds.</span>
-        <span class="n">page</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-
-        <span class="c">#take the source code of the url and from the page RESPONSE object (by accessing .text) and create a BeautifulSoup</span>
-        <span class="c">#object to make the source code easier to manipulate.</span>
-        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-
-        <span class="c">#Assign the remaining text values to a variable called text</span>
-        <span class="n">allLogos</span><span class="o">=</span> <span class="p">[</span><span class="n">link</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;src&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;/logos/teams&quot;</span><span class="p">))]</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">allLogos</span> <span class="k">if</span> <span class="n">team</span> <span class="ow">in</span> <span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-
-    
-    <span class="c">#If any of the above code fails, assign an empty string &quot;&quot; to the variable called text     </span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    
-<span class="k">def</span> <span class="nf">teamlabel</span><span class="p">():</span>
-    <span class="n">file1</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">getTeamlogo</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-    <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file1</span><span class="p">)</span>
-    <span class="n">imagebox</span> <span class="o">=</span> <span class="n">OffsetImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=.</span><span class="mi">35</span><span class="p">)</span>
-    <span class="n">ab</span> <span class="o">=</span> <span class="n">AnnotationBbox</span><span class="p">(</span><span class="n">imagebox</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span><span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
-    
-<span class="k">def</span> <span class="nf">eaglabel</span><span class="p">():</span>
-    <span class="n">file1</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">getTeamlogo</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-    <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file1</span><span class="p">)</span>
-    <span class="n">imagebox</span> <span class="o">=</span> <span class="n">OffsetImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=.</span><span class="mi">35</span><span class="p">)</span>
-    <span class="n">ab</span> <span class="o">=</span> <span class="n">AnnotationBbox</span><span class="p">(</span><span class="n">imagebox</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">bboxprops</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">fc</span> <span class="o">=</span> <span class="s">&#39;green&#39;</span><span class="p">))</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input_hidden">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">#Import necessary Python Packages</span>
 <span class="kn">import</span> <span class="nn">nflgame</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -369,34 +311,44 @@ $(document).ready(function(){
         <span class="k">return</span> <span class="n">s</span> <span class="o">+</span> <span class="s">&#39;%&#39;</span>
 
 <span class="n">formatter</span> <span class="o">=</span> <span class="n">FuncFormatter</span><span class="p">(</span><span class="n">to_percent</span><span class="p">)</span>
-</pre></div>
 
-</div>
-</div>
-</div>
+<span class="c">#This function grabs team logos</span>
+<span class="k">def</span> <span class="nf">getTeamlogo</span><span class="p">(</span><span class="n">team</span><span class="p">):</span>
 
-</div>
+    <span class="n">url</span><span class="o">=</span><span class="s">&quot;http://www.nfl.com/teams&quot;</span>
+<span class="c">#The program will attempt all actions indented under &quot;try&quot;, and if it fails</span>
+<span class="c">#will execute the commands indented beneath except.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s">&#39;http&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">url</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="n">url</span><span class="o">=</span><span class="s">&#39;http://&#39;</span><span class="o">+</span> <span class="n">url</span>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input_hidden">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre>    <span class="c">#Grab all plays from games in Week 1-4, 2015</span>
-    <span class="n">games</span> <span class="o">=</span> <span class="n">nflgame</span><span class="o">.</span><span class="n">games</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="n">week</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">custom</span><span class="o">.</span><span class="n">css</span><span class="p">,</span><span class="mi">8</span><span class="p">)))</span>
-    <span class="n">plays</span> <span class="o">=</span> <span class="n">nflgame</span><span class="o">.</span><span class="n">combine_plays</span><span class="p">(</span><span class="n">games</span><span class="p">)</span>
+        <span class="c">#Use the requests library to reach out the url and return a RESPONSE object which contains page source code, cookies, and</span>
+        <span class="c">#other miscellaneous information from the page, error if the url does not respond in 5 seconds.</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
-    <span class="c">#Build a Dataset with all 3rd down plays out of the set of plays built abovsd</span>
-    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;team&quot;</span><span class="p">,</span> <span class="s">&quot;ytg&quot;</span><span class="p">,</span> <span class="s">&quot;success&quot;</span><span class="p">,</span> <span class="s">&quot;rush&quot;</span><span class="p">,</span> <span class="s">&quot;patt&quot;</span><span class="p">,</span> <span class="s">&quot;playdescription&quot;</span><span class="p">]</span>
+        <span class="c">#take the source code of the url and from the page RESPONSE object (by accessing .text) and create a BeautifulSoup</span>
+        <span class="c">#object to make the source code easier to manipulate.</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+        <span class="c">#Grab All Logos, return specified team logo</span>
+        <span class="n">allLogos</span><span class="o">=</span> <span class="p">[</span><span class="n">link</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;src&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;/logos/teams&quot;</span><span class="p">))]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">allLogos</span> <span class="k">if</span> <span class="n">team</span> <span class="ow">in</span> <span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plays</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">down</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-        <span class="n">tempdf</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">p</span><span class="o">.</span><span class="n">team</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">yards_togo</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">first_down</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">rushing_att</span><span class="p">,</span>
-                                    <span class="n">p</span><span class="o">.</span><span class="n">passing_att</span><span class="p">,</span><span class="n">p</span><span class="p">]],</span><span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tempdf</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    
+    <span class="c">#If any of the above code fails, assign an empty string &quot;&quot; to the variable called text     </span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="c">#USED TO PUT LOGOS ON GRAPH</span>
+<span class="k">def</span> <span class="nf">teamlabel</span><span class="p">():</span>
+    <span class="n">file1</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">urllib</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">getTeamlogo</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file1</span><span class="p">)</span>
+    <span class="n">imagebox</span> <span class="o">=</span> <span class="n">OffsetImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=.</span><span class="mi">35</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=.</span><span class="mi">75</span><span class="p">)</span>
+    <span class="n">ab</span> <span class="o">=</span> <span class="n">AnnotationBbox</span><span class="p">(</span><span class="n">imagebox</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span><span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">ab</span><span class="p">)</span>
+    
+    
+<span class="k">print</span> <span class="s">&quot;Click here for initializaliton code. (Graphics and Import Statements)&quot;</span>
 </pre></div>
 
 </div>
@@ -410,12 +362,8 @@ $(document).ready(function(){
 
 
 <div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansicyan">  File </span><span class="ansigreen">&quot;&lt;ipython-input-3-5a994fb878de&gt;&quot;</span><span class="ansicyan">, line </span><span class="ansigreen">3</span>
-<span class="ansiyellow">    games = nflgame.games(2015, week=list(arange(custom.css,8)))</span>
-<span class="ansigrey">    ^</span>
-<span class="ansired">IndentationError</span><span class="ansired">:</span> unexpected indent
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Click here for initializaliton code. (Graphics and Import Statements)
 </pre>
 </div>
 </div>
@@ -424,76 +372,34 @@ $(document).ready(function(){
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Comparing my dataset with ProFootballReference's wonderful Game Play Finder tool, you'll see that our data conflicts with PFR.  We have 1,852 3rd down plays compared 1,671 here (<a href="http://bit.ly/1M2EuFH">http://bit.ly/1M2EuFH</a>).</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input_hidden">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">#Display the dataset</span>
-<span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
+<div class=" highlight hl-ipython2"><pre><span class="c">#Grab all plays from games in Week custom.css-7, 2015</span>
+<span class="n">games</span> <span class="o">=</span> <span class="n">nflgame</span><span class="o">.</span><span class="n">games</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="n">week</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">custom</span><span class="o">.</span><span class="n">css</span><span class="p">,</span><span class="mi">8</span><span class="p">)))</span>
+<span class="n">plays</span> <span class="o">=</span> <span class="n">nflgame</span><span class="o">.</span><span class="n">combine_plays</span><span class="p">(</span><span class="n">games</span><span class="p">)</span>
 
-</div>
-</div>
-</div>
+<span class="c">#Build a Dataset with all 3rd down plays out of the set of plays built above</span>
+<span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;team&quot;</span><span class="p">,</span> <span class="s">&quot;ytg&quot;</span><span class="p">,</span> <span class="s">&quot;success&quot;</span><span class="p">,</span> <span class="s">&quot;rush&quot;</span><span class="p">,</span> <span class="s">&quot;patt&quot;</span><span class="p">,</span> <span class="s">&quot;playdescription&quot;</span><span class="p">]</span>
 
-</div>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
 
-<div class="output_wrapper">
-<div class="output">
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">plays</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">down</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">tempdf</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">p</span><span class="o">.</span><span class="n">team</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">yards_togo</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">first_down</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">rushing_att</span><span class="p">,</span> 
+                                <span class="n">p</span><span class="o">.</span><span class="n">passing_att</span><span class="p">,</span><span class="n">p</span><span class="p">]],</span><span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tempdf</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansired">---------------------------------------------------------------------------</span>
-<span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-4-85191f40ffdb&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
-<span class="ansigreen">      1</span> <span class="ansired">#Display the dataset</span><span class="ansiyellow"></span><span class="ansiyellow"></span>
-<span class="ansigreen">----&gt; 2</span><span class="ansiyellow"> </span>df<span class="ansiyellow">.</span>describe<span class="ansiyellow">(</span><span class="ansiyellow">)</span><span class="ansiyellow"></span>
-
-<span class="ansired">NameError</span>: name &apos;df&apos; is not defined</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>After some digging, it looks like there are a number of plays recorded that did not result in a play.  There are also a few field goals.  We'll remove those from our dataset.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input_hidden">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c">#Remove No Plays and FGs </span>
+<span class="c">#Remove No Plays and FGs </span>
 <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="s">&quot;playdescription&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;No Play&quot;</span><span class="p">)]</span>
 <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="s">&quot;playdescription&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;field goal&quot;</span><span class="p">)]</span>
 
 <span class="c">#Set few odd plays where success ==2 to 1, to indicate a successful 3rd down conversion.</span>
 <span class="n">df</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">&#39;success&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s">&#39;success&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+
+<span class="k">print</span> <span class="s">&quot;Click Here to see the actual NFL Data Import Code.&quot;</span>
 </pre></div>
 
 </div>
@@ -511,14 +417,14 @@ $(document).ready(function(){
 <pre>
 <span class="ansired">---------------------------------------------------------------------------</span>
 <span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-5-3669a4a56867&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
-<span class="ansigreen">      1</span> <span class="ansired">#Remove No Plays and FGs</span><span class="ansiyellow"></span><span class="ansiyellow"></span>
-<span class="ansigreen">----&gt; 2</span><span class="ansiyellow"> </span>df<span class="ansiyellow">=</span>df<span class="ansiyellow">[</span><span class="ansiyellow">~</span>df<span class="ansiyellow">[</span><span class="ansiblue">&quot;playdescription&quot;</span><span class="ansiyellow">]</span><span class="ansiyellow">.</span>astype<span class="ansiyellow">(</span><span class="ansiblue">&quot;str&quot;</span><span class="ansiyellow">)</span><span class="ansiyellow">.</span>str<span class="ansiyellow">.</span>contains<span class="ansiyellow">(</span><span class="ansiblue">&quot;No Play&quot;</span><span class="ansiyellow">)</span><span class="ansiyellow">]</span><span class="ansiyellow"></span>
-<span class="ansigreen">      3</span> df<span class="ansiyellow">=</span>df<span class="ansiyellow">[</span><span class="ansiyellow">~</span>df<span class="ansiyellow">[</span><span class="ansiblue">&quot;playdescription&quot;</span><span class="ansiyellow">]</span><span class="ansiyellow">.</span>astype<span class="ansiyellow">(</span><span class="ansiblue">&quot;str&quot;</span><span class="ansiyellow">)</span><span class="ansiyellow">.</span>str<span class="ansiyellow">.</span>contains<span class="ansiyellow">(</span><span class="ansiblue">&quot;field goal&quot;</span><span class="ansiyellow">)</span><span class="ansiyellow">]</span><span class="ansiyellow"></span>
+<span class="ansigreen">&lt;ipython-input-2-d04ced4718e4&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">      1</span> <span class="ansired">#Grab all plays from games in Week custom.css-7, 2015</span><span class="ansiyellow"></span><span class="ansiyellow"></span>
+<span class="ansigreen">----&gt; 2</span><span class="ansiyellow"> </span>games <span class="ansiyellow">=</span> nflgame<span class="ansiyellow">.</span>games<span class="ansiyellow">(</span><span class="ansicyan">2015</span><span class="ansiyellow">,</span> week<span class="ansiyellow">=</span>list<span class="ansiyellow">(</span>arange<span class="ansiyellow">(</span>custom<span class="ansiyellow">.</span>css<span class="ansiyellow">,</span><span class="ansicyan">8</span><span class="ansiyellow">)</span><span class="ansiyellow">)</span><span class="ansiyellow">)</span><span class="ansiyellow"></span>
+<span class="ansigreen">      3</span> plays <span class="ansiyellow">=</span> nflgame<span class="ansiyellow">.</span>combine_plays<span class="ansiyellow">(</span>games<span class="ansiyellow">)</span><span class="ansiyellow"></span>
 <span class="ansigreen">      4</span> <span class="ansiyellow"></span>
-<span class="ansigreen">      5</span> <span class="ansired">#Set few odd plays where success ==2 to 1, to indicate a successful 3rd down conversion.</span><span class="ansiyellow"></span><span class="ansiyellow"></span>
+<span class="ansigreen">      5</span> <span class="ansired">#Build a Dataset with all 3rd down plays out of the set of plays built above</span><span class="ansiyellow"></span><span class="ansiyellow"></span>
 
-<span class="ansired">NameError</span>: name &apos;df&apos; is not defined</pre>
+<span class="ansired">NameError</span>: name &apos;custom&apos; is not defined</pre>
 </div>
 </div>
 
@@ -531,7 +437,7 @@ $(document).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A one play difference from PFR is great.  Now that the data is ready, let's dig into it. The graphic below confirms that the Eagles have performed quite poor on third down.  Their performance ranks 30th in the league, and they are converting at a far below average rate.</p>
+<p>The first graph shows 3rd down performance throughout the league.  This is to get a quick and easy sense of how a team is doing so far.</p>
 
 </div>
 </div>
@@ -539,7 +445,7 @@ $(document).ready(function(){
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input_hidden">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">#Build table that shows 3rd down rate by team</span>
@@ -563,10 +469,6 @@ $(document).ready(function(){
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s">&quot;success&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;blue&quot;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s">&quot;--&quot;</span><span class="p">,</span> 
          <span class="n">label</span><span class="o">=</span><span class="s">&quot;Average Success Rate&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;3rd Down Success Rates by Team&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&quot;The Eagles are Much</span><span class="se">\n</span><span class="s"> Below Average&quot;</span><span class="p">,</span> 
-             <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">third</span><span class="p">[</span><span class="n">third</span><span class="o">.</span><span class="n">index</span><span class="o">==</span><span class="s">&quot;PHI&quot;</span><span class="p">][</span><span class="s">&quot;Conv_Rate&quot;</span><span class="p">]),</span> 
-             <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">third</span><span class="p">[</span><span class="s">&quot;Conv_Rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">+.</span><span class="mo">02</span><span class="p">),</span>
-             <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -587,7 +489,7 @@ $(document).ready(function(){
 <pre>
 <span class="ansired">---------------------------------------------------------------------------</span>
 <span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-6-5084ee84639d&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">&lt;ipython-input-3-cadfb2d42cff&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
 <span class="ansigreen">      1</span> <span class="ansired">#Build table that shows 3rd down rate by team</span><span class="ansiyellow"></span><span class="ansiyellow"></span>
 <span class="ansigreen">----&gt; 2</span><span class="ansiyellow"> </span>third<span class="ansiyellow">=</span>df<span class="ansiyellow">.</span>pivot_table<span class="ansiyellow">(</span>index<span class="ansiyellow">=</span><span class="ansiblue">&apos;team&apos;</span><span class="ansiyellow">,</span> values<span class="ansiyellow">=</span><span class="ansiblue">&apos;success&apos;</span><span class="ansiyellow">,</span> aggfunc<span class="ansiyellow">=</span><span class="ansiyellow">[</span>np<span class="ansiyellow">.</span>sum<span class="ansiyellow">,</span> len<span class="ansiyellow">,</span>np<span class="ansiyellow">.</span>mean<span class="ansiyellow">]</span><span class="ansiyellow">)</span><span class="ansiyellow"></span>
 <span class="ansigreen">      3</span> third<span class="ansiyellow">.</span>columns<span class="ansiyellow">=</span><span class="ansiyellow">[</span><span class="ansiblue">&quot;Conversions&quot;</span><span class="ansiyellow">,</span> <span class="ansiblue">&quot;Attempts&quot;</span><span class="ansiyellow">,</span> <span class="ansiblue">&quot;Conv_Rate&quot;</span><span class="ansiyellow">]</span><span class="ansiyellow"></span>
@@ -607,8 +509,7 @@ $(document).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The poor performance is certainly related to yards to go on third downs, as Warren Sharp did point out that the Eagles also have the 3rd highest yards to go average in the league, but it does not look like that tells the whole story.</p>
-<p>The graph below shows the league wide 3rd down conversion rate by yards to go, and then I overlaid team performance to show how teams are performing compared to how you'd expect based on average yards to go.  I've highlighted the Eagles with a Green label, and you can see that the the Eagles are performing below where they'd expect with their ~8 average yards to go.</p>
+<p>A team's 3rd down performance can be due to facing more challenging situations, or it may be because the offense just does not do well on third down.  The graph below shows how teams are performing, compared to what we'd expect for their average 3rd down distance.</p>
 
 </div>
 </div>
@@ -616,7 +517,7 @@ $(document).ready(function(){
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input_hidden">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">#Build a Series with avg ytg for each team</span>
@@ -626,7 +527,7 @@ $(document).ready(function(){
 
 <span class="n">third</span><span class="o">=</span><span class="n">third</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
 
-
+<span class="c">#Plot third down performance by team vs. logistic regression expectation</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">set_context</span><span class="p">({</span><span class="s">&quot;figure.figsize&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">10</span><span class="p">)})</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 
@@ -649,11 +550,7 @@ $(document).ready(function(){
 <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">avgdist</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> 
                        <span class="n">avgdist</span><span class="p">,</span> 
                        <span class="n">third</span><span class="p">[</span><span class="s">&quot;Conv_Rate&quot;</span><span class="p">]):</span>
-    <span class="k">if</span> <span class="n">label</span><span class="o">==</span><span class="s">&quot;PHI&quot;</span><span class="p">:</span>
-        <span class="n">eaglabel</span><span class="p">()</span>
-    
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">teamlabel</span><span class="p">()</span>
+    <span class="n">teamlabel</span><span class="p">()</span>
     
     
 </pre></div>
@@ -673,7 +570,7 @@ $(document).ready(function(){
 <pre>
 <span class="ansired">---------------------------------------------------------------------------</span>
 <span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-7-ca5ebd75b4a7&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">&lt;ipython-input-4-e5acbf602db5&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
 <span class="ansigreen">      1</span> <span class="ansired">#Build a Series with avg ytg for each team</span><span class="ansiyellow"></span><span class="ansiyellow"></span>
 <span class="ansigreen">----&gt; 2</span><span class="ansiyellow"> </span>avgdist<span class="ansiyellow">=</span>df<span class="ansiyellow">.</span>pivot_table<span class="ansiyellow">(</span>index<span class="ansiyellow">=</span><span class="ansiblue">&apos;team&apos;</span><span class="ansiyellow">,</span> values<span class="ansiyellow">=</span><span class="ansiblue">&apos;ytg&apos;</span><span class="ansiyellow">,</span> aggfunc<span class="ansiyellow">=</span>np<span class="ansiyellow">.</span>mean<span class="ansiyellow">)</span><span class="ansiyellow"></span>
 <span class="ansigreen">      3</span> avgdist<span class="ansiyellow">=</span>avgdist<span class="ansiyellow">.</span>sort_index<span class="ansiyellow">(</span><span class="ansiyellow">)</span><span class="ansiyellow"></span>
@@ -701,8 +598,11 @@ $(document).ready(function(){
 </li>
 </ol>
 <p>For instance, a team with an average yards to of 7 yards to go could have an expected conversion rate of 38% (.38 * 3 / 3) if all of their conversions are from 7 yards out, or they could have an expected conversion rate of more than 40% if two out of of every three third downs has one yard remaining, and the third is 3rd and 20 ((.6 + .6 + .1) / 3).</p>
-<p>Since the Eagles are outside of the light blue band, their poor performance has to do with additional factors besides luck.</p>
-<p>Below I break down each team's third downs by distance, and see if the Eagle's below expected performance has to do with the breakdown of distances they've had to go, or if they are actually performing worse on third down than we would expect.</p>
+<p>Below I break down each team's third downs by distance, to better understand the types of situations teams are putting themselves into on third down:</p>
+<p>Short [0-3]
+Medium (3-6]
+Long (6-10]
+XLong (10+)</p>
 
 </div>
 </div>
@@ -710,7 +610,7 @@ $(document).ready(function(){
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input_hidden">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;short&#39;</span><span class="p">,</span><span class="s">&#39;mid&#39;</span><span class="p">,</span><span class="s">&#39;long&#39;</span><span class="p">,</span><span class="s">&#39;long+&#39;</span><span class="p">]</span>
@@ -723,6 +623,7 @@ $(document).ready(function(){
 <span class="n">distfreq</span><span class="o">=</span><span class="n">distfreq</span><span class="p">[</span><span class="n">labels</span><span class="p">]</span>
 <span class="n">distfreq</span><span class="o">=</span><span class="n">distfreq</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">distfreq</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="s">&#39;rows&#39;</span><span class="p">)</span>
 
+<span class="c">#Build graph to show Expect 3rd Down rankings.</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">)</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">set_context</span><span class="p">({</span><span class="s">&quot;figure.figsize&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mi">10</span><span class="p">)})</span>
 
@@ -760,7 +661,7 @@ $(document).ready(function(){
 <pre>
 <span class="ansired">---------------------------------------------------------------------------</span>
 <span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-8-a60fd72602bb&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">&lt;ipython-input-5-848429b600df&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
 <span class="ansigreen">      2</span> <span class="ansiyellow"></span>
 <span class="ansigreen">      3</span> <span class="ansired">#Build distance buckets for 3rd down distance</span><span class="ansiyellow"></span><span class="ansiyellow"></span>
 <span class="ansigreen">----&gt; 4</span><span class="ansiyellow"> df[&apos;ytgBuckets&apos;]=pandas.cut(df.ytg, [0,3,6,10,50], right=True, labels=labels,retbins=False,
@@ -780,7 +681,7 @@ $(document).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Looking at the data graphically, there does not appear to be anything skewed about the Eagles 3rd down situations (where we'd see more short and extra long attempts). Let's calculate a new expected third down percentage for each team given the breakdown of their opportunities and see how each team fares through this lens.</p>
+<p>The graph below looks at how we'd expect teams to rank in 3rd down conversion rate, if they converted at league average for each of their 3rd down situations.</p>
 
 </div>
 </div>
@@ -788,7 +689,7 @@ $(document).ready(function(){
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input_hidden">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">#Table that shows third down attempts and rate by team and distance</span>
@@ -811,11 +712,6 @@ $(document).ready(function(){
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="o">*</span><span class="n">df</span><span class="p">[</span><span class="s">&quot;success&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span><span class="n">lw</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;blue&quot;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s">&quot;--&quot;</span><span class="p">,</span> 
          <span class="n">label</span><span class="o">=</span><span class="s">&quot;Average Success Rate&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;Expected 3rd Down Success Rates by Team&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="s">&quot;The Eagles are expected</span><span class="se">\n</span><span class="s"> to be slightly</span><span class="se">\n</span><span class="s"> Below Average&quot;</span><span class="p">,</span> 
-             <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">third</span><span class="p">[</span><span class="n">third</span><span class="o">.</span><span class="n">index</span><span class="o">==</span><span class="s">&quot;PHI&quot;</span><span class="p">][</span><span class="s">&quot;e3d&quot;</span><span class="p">]),</span> 
-             <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">third</span><span class="p">[</span><span class="s">&quot;Conv_Rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">+.</span><span class="mo">01</span><span class="p">),</span>
-             <span class="n">arrowprops</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.05</span><span class="p">),</span>
-            <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
 
 <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">third</span><span class="o">.</span><span class="n">index</span> <span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">third</span><span class="o">.</span><span class="n">e3d</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;gray&quot;</span><span class="p">)</span>
@@ -842,7 +738,7 @@ $(document).ready(function(){
 <pre>
 <span class="ansired">---------------------------------------------------------------------------</span>
 <span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-9-303677577d63&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">&lt;ipython-input-6-38c074d8a28f&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
 <span class="ansigreen">      3</span> <span class="ansiyellow"></span>
 <span class="ansigreen">      4</span> <span class="ansired">#NFL 3rd down rates by distance</span><span class="ansiyellow"></span><span class="ansiyellow"></span>
 <span class="ansigreen">----&gt; 5</span><span class="ansiyellow"> </span>lenmeans<span class="ansiyellow">=</span>df<span class="ansiyellow">.</span>pivot_table<span class="ansiyellow">(</span>columns<span class="ansiyellow">=</span><span class="ansiblue">&apos;ytgBuckets&apos;</span><span class="ansiyellow">,</span> values<span class="ansiyellow">=</span><span class="ansiblue">&apos;success&apos;</span><span class="ansiyellow">,</span> aggfunc<span class="ansiyellow">=</span>np<span class="ansiyellow">.</span>mean<span class="ansiyellow">)</span><span class="ansiyellow"></span>
@@ -862,7 +758,7 @@ $(document).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It's pretty clear that the Eagles are indeed putting themselves in a poor position, as their expected 3rd down rate still ranks in the bottom 4 in the league.  However, there is a large discrepancy between their expected 3rd down rate and their actual.  The graph below looks at each team's expected # of 3rd downs, when controlled for situation, versus their actual number of third downs.</p>
+<p>The final graph compares the total # of 3rd down conversions for each team we would expect if they had performed at league average compared to how many how many they have actually converted to see which teams are most benefitting or being hurt by their third down performance.</p>
 
 </div>
 </div>
@@ -870,7 +766,7 @@ $(document).ready(function(){
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input_hidden">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s">&quot;white&quot;</span><span class="p">)</span>
@@ -892,11 +788,7 @@ $(document).ready(function(){
 <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">third</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> 
                        <span class="n">third</span><span class="p">[</span><span class="s">&quot;expsuccess&quot;</span><span class="p">],</span> 
                        <span class="n">third</span><span class="p">[</span><span class="s">&quot;Conversions&quot;</span><span class="p">]):</span>
-    <span class="k">if</span> <span class="n">label</span><span class="o">==</span><span class="s">&quot;PHI&quot;</span><span class="p">:</span>
-        <span class="n">eaglabel</span><span class="p">()</span>
-    
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">teamlabel</span><span class="p">()</span>
+    <span class="n">teamlabel</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -914,7 +806,7 @@ $(document).ready(function(){
 <pre>
 <span class="ansired">---------------------------------------------------------------------------</span>
 <span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-10-04c27f5fb20b&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
+<span class="ansigreen">&lt;ipython-input-7-027a60a75738&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
 <span class="ansigreen">      2</span> sns<span class="ansiyellow">.</span>set_context<span class="ansiyellow">(</span><span class="ansiyellow">{</span><span class="ansiblue">&quot;figure.figsize&quot;</span><span class="ansiyellow">:</span> <span class="ansiyellow">(</span><span class="ansicyan">24</span><span class="ansiyellow">,</span> <span class="ansicyan">10</span><span class="ansiyellow">)</span><span class="ansiyellow">}</span><span class="ansiyellow">)</span><span class="ansiyellow"></span>
 <span class="ansigreen">      3</span> <span class="ansiyellow"></span>
 <span class="ansigreen">----&gt; 4</span><span class="ansiyellow"> </span>g<span class="ansiyellow">=</span>plt<span class="ansiyellow">.</span>scatter<span class="ansiyellow">(</span>x<span class="ansiyellow">=</span>third<span class="ansiyellow">.</span>expsuccess<span class="ansiyellow">,</span> y<span class="ansiyellow">=</span>third<span class="ansiyellow">.</span>Conversions<span class="ansiyellow">,</span> s<span class="ansiyellow">=</span><span class="ansicyan">200</span><span class="ansiyellow">,</span> c<span class="ansiyellow">=</span><span class="ansiblue">&quot;red&quot;</span><span class="ansiyellow">)</span><span class="ansiyellow"></span>
@@ -934,96 +826,7 @@ $(document).ready(function(){
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can see that the Eagles are one of the teams most below their expectation.  This means that not only are the Eagles putting themselves in poor positions, they are also not doing well for the positions they're in.  In fact, the Eagles are third in the league in missed third downs.  It looks like Chip Kelly, Sam Bradford and the rest of the Eagles have a lot of work ahead of them to succeed.  Let's dive a little deeper into the Eagles performance and see where they have the biggest opportunity for improvement.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input_hidden">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">lenmeans</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s">&#39;ytgBuckets&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s">&#39;success&#39;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)[</span><span class="n">labels</span><span class="p">]</span>
-<span class="n">eagmeans</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">&quot;team&quot;</span><span class="p">]</span><span class="o">==</span><span class="s">&quot;PHI&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s">&#39;ytgBuckets&#39;</span><span class="p">,</span> 
-                                           <span class="n">values</span><span class="o">=</span><span class="s">&#39;success&#39;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)[</span><span class="n">labels</span><span class="p">]</span>
-
-<span class="n">bar_width</span> <span class="o">=</span> <span class="mf">0.35</span>
-
-<span class="n">opacity</span> <span class="o">=</span> <span class="mf">0.4</span>
-<span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-
-
-<span class="n">rects1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">eagmeans</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span>
-                 <span class="n">color</span><span class="o">=</span><span class="s">&#39;darkgreen&#39;</span><span class="p">,</span>
-                 <span class="n">label</span><span class="o">=</span><span class="s">&#39;Eagles&#39;</span><span class="p">)</span>
-
-<span class="n">rects2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="n">bar_width</span><span class="p">,</span> <span class="n">lenmeans</span><span class="p">,</span> <span class="n">bar_width</span><span class="p">,</span>
-                 <span class="n">color</span><span class="o">=</span><span class="s">&#39;gray&#39;</span><span class="p">,</span>
-                 <span class="n">alpha</span><span class="o">=</span><span class="n">opacity</span><span class="p">,</span>
-                 <span class="n">label</span><span class="o">=</span><span class="s">&#39;League Average&#39;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;Expected 3rd Down %&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">&quot;Eagles 3rd Down Performance vs. League Average by Distance&quot;</span><span class="p">,</span> 
-                    <span class="n">fontsize</span><span class="o">=</span><span class="mi">28</span><span class="p">)</span>
-
-<span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="s">&quot;left&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansired">---------------------------------------------------------------------------</span>
-<span class="ansired">NameError</span>                                 Traceback (most recent call last)
-<span class="ansigreen">&lt;ipython-input-11-cd416cb1f870&gt;</span> in <span class="ansicyan">&lt;module&gt;</span><span class="ansiblue">()</span>
-<span class="ansigreen">----&gt; 1</span><span class="ansiyellow"> </span>lenmeans<span class="ansiyellow">=</span>df<span class="ansiyellow">.</span>pivot_table<span class="ansiyellow">(</span>columns<span class="ansiyellow">=</span><span class="ansiblue">&apos;ytgBuckets&apos;</span><span class="ansiyellow">,</span> values<span class="ansiyellow">=</span><span class="ansiblue">&apos;success&apos;</span><span class="ansiyellow">,</span> aggfunc<span class="ansiyellow">=</span>np<span class="ansiyellow">.</span>mean<span class="ansiyellow">)</span><span class="ansiyellow">[</span>labels<span class="ansiyellow">]</span><span class="ansiyellow"></span>
-<span class="ansigreen">      2</span> eagmeans=df[df[&quot;team&quot;]==&quot;PHI&quot;].pivot_table(columns=&apos;ytgBuckets&apos;, 
-<span class="ansigreen">      3</span>                                            values=&apos;success&apos;, aggfunc=np.mean)[labels]
-<span class="ansigreen">      4</span> <span class="ansiyellow"></span>
-<span class="ansigreen">      5</span> bar_width <span class="ansiyellow">=</span> <span class="ansicyan">0.35</span><span class="ansiyellow"></span>
-
-<span class="ansired">NameError</span>: name &apos;df&apos; is not defined</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>While league average performance by distance follows an expected relationship where longer opportunities succeed less frequently, the Eagles performance is clearly erratic.  They are performing at below league average levels for every type of third down except for long+, and are a very poor 10% conversion rate on 3rd and mediums.</p>
-<p>It looks like the key to the Eagles turnaround will be these 3rd and medium situations.  We'll monitor their performance in these situations moving forward.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Over the next couple of articles I will look at how opposing defenses look through this same lens.  I will also look at historical data to judge the predictive performance of e3d on the rest of the season's performance.</p>
-<p>Thanks for reading.</p>
+<p>Thanks for taking a look.  Feel free to borrow from the visualizations or the code for your own analyses.  I'd love to see how people are using this, so if you do use it, please send me a note on Twitter @FootballActuary.  I plan to build out more notebooks like this to highlight team performance in other facets of the game, like in the redzone and early/late in games so follow me to be notified as they come out.  Thanks!</p>
 
 </div>
 </div>
