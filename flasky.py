@@ -2,6 +2,7 @@ from flask import Flask
 from flask import render_template
 import makenotebook
 import json
+import os
 
 app = Flask(__name__)
 
@@ -12,8 +13,9 @@ def index():
 
 
 @app.route("/3d/<start>")
-def tweets(start):
+def thirdd(start):
     return app.send_static_file(makenotebook.editNotebook(start))
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)

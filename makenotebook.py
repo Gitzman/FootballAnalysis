@@ -4,8 +4,8 @@ from IPython.nbconvert.preprocessors.execute import ExecutePreprocessor
 import textwrap
 from IPython import nbconvert
 import os
-start=1
-end=2
+
+
 def editNotebook(start,end=7):
     nb = nbformat.read("3danalysis.ipynb", as_version=4)
 
@@ -29,5 +29,3 @@ def editNotebook(start,end=7):
     + filename+".ipynb", directory+ filename+".html"))
 
     return filename+".html"
-
-editNotebook(start,end)
