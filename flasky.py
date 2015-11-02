@@ -15,3 +15,7 @@ def index():
 @app.route("/3d/<start>")
 def thirdd(start):
     return app.send_static_file(makenotebook.editNotebook(start))
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
