@@ -6,7 +6,7 @@ import os
 import itertools
 import numpy as np
 
-def editNotebook(start,end=7):
+def editNotebook(start=1,end=7):
     nb = nbformat.read("3danalysis.ipynb", as_version=4)
 
     nb.cells[0]["source"]=nb.cells[0]["source"].format(start,end)

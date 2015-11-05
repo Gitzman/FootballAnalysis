@@ -3,6 +3,7 @@ from flask import render_template
 import makenotebook
 import json
 import os
+from flask import request
 
 app = Flask(__name__)
 
@@ -12,9 +13,12 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/3d/<start>")
-def thirdd(start):
-    return app.send_static_file(makenotebook.grabNotebook(start,7))
+@app.route("/3d")
+
+def thirdd():
+    start=request.args.get('start')
+    end=request.args.get('end')
+    return app.send_static_file(makenotebook.grabNotebook(start,end))
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
