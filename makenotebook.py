@@ -3,7 +3,8 @@ from IPython import nbformat
 from IPython.nbconvert.preprocessors.execute import ExecutePreprocessor
 from IPython import nbconvert
 import os
-
+import itertools
+import numpy as np
 
 def editNotebook(start,end=7):
     nb = nbformat.read("3danalysis.ipynb", as_version=4)
@@ -28,3 +29,11 @@ def editNotebook(start,end=7):
     + filename+".ipynb", directory+ filename+".html"))
 
     return filename+".html"
+
+def updateStatics():
+    [editNotebook(j[0], j[1]) for j in [i for i in itertools.combinations(np.arange(1,8),2)]]
+
+def grabNotebook(start,end):
+    return str(start)+str(end)+"export.html"
+
+#updateStatics()
