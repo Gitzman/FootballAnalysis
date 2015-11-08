@@ -31,9 +31,11 @@ def editNotebook(start=1,end=7):
     return filename+".html"
 
 def updateStatics():
-    [editNotebook(j[0], j[1]) for j in [i for i in itertools.combinations(np.arange(1,8),2)]]
+    [editNotebook(j[0], j[1]) for j in [i for i in itertools.combinations(np.arange(1,9),2)]]
 
-def grabNotebook(start,end):
+def grabNotebook(start=1,end=8):
     return str(start)+str(end)+"export.html"
 
 #updateStatics()
+
+#editNotebook(1,2)

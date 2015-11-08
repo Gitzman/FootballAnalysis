@@ -10,8 +10,11 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return app.send_static_file("index.html")
 
+@app.route("/adhoc")
+def adhoc():
+    return app.send_static_file(request.args.get('art')+".html")
 
 @app.route("/3d")
 
