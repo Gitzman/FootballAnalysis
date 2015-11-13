@@ -150,7 +150,7 @@ p {
     font-size: 1.25em;
     line-height: 30px;
     font-weight: 400;
-    color: #CF7F17;
+    color: #00a000;
     padding-right: 17px;
 }
 
@@ -215,7 +215,11 @@ div#notebook {
 }
 .jumbotron img {
   padding: 0px;
-  border: 10px solid #23B413;
+  border: 10px solid;
+  -moz-border-image: -moz-linear-gradient(top, #00a000 0%, #c0c0c0 100%);
+  -webkit-border-image: -webkit-linear-gradient(top, #00a000 0%, #c0c0c0 100%);
+  border-image: linear-gradient(to right, #00a000 39%, #c0c0c0 100%);
+  border-image-slice: 1;
   position: relative;
   left: 31%;
 }
@@ -227,12 +231,12 @@ div#notebook {
   position: relative;
   left: -16%;
 }
-h1 {
+/*h1 {
   padding-bottom: 15px;
   position: relative;
   left: 23%;
   bottom: 63%;
-}
+}*/
 h2 {
   color: #003B48;
   font-family: "Arial Black";
@@ -241,4 +245,10 @@ h2 {
 }
 .col-md-6 {
   padding-right: 20px;
+}
+
+element {
+}
+.navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+    margin-left: 40px;
 }

@@ -13,7 +13,7 @@ def editNotebook(start=1,end=7):
     nb.cells[3]["source"]=nb.cells[3]["source"].format(start,end,end+1)
 
     pp = ExecutePreprocessor()
-    pp.timeout = 30  # seconds
+    pp.timeout = 90  # seconds
     pp.interrupt_on_timeout = True
 
     nb_executed, resources = pp.preprocess(nb, resources={})
@@ -30,12 +30,12 @@ def editNotebook(start=1,end=7):
 
     return filename+".html"
 
-def updateStatics():
-    [editNotebook(j[0], j[1]) for j in [i for i in itertools.combinations(np.arange(1,9),2)]]
+def updateStatics(end):
+    [editNotebook(j[0], j[1]) for j in [i for i in itertools.combinations(np.arange(1,end+1),2)]]
 
-def grabNotebook(start=1,end=8):
+def grabNotebook(start=1,end=9):
     return str(start)+str(end)+"export.html"
 
-#updateStatics()
+#updateStatics(9)
 
 #editNotebook(1,2)
