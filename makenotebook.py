@@ -6,14 +6,14 @@ import os
 import itertools
 import numpy as np
 
-def editNotebook(start=1,end=7):
+def editNotebook(start=1,end=10):
     nb = nbformat.read("3danalysis.ipynb", as_version=4)
 
     nb.cells[0]["source"]=nb.cells[0]["source"].format(start,end)
     nb.cells[3]["source"]=nb.cells[3]["source"].format(start,end,end+1)
 
     pp = ExecutePreprocessor()
-    pp.timeout = 90  # seconds
+    pp.timeout = 300  # seconds
     pp.interrupt_on_timeout = True
 
     nb_executed, resources = pp.preprocess(nb, resources={})
